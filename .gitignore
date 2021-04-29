@@ -1,2 +1,7 @@
-langlois_project_044/ #Raw read files
-star_index/ mouse genome index
+langlois_project_044/
+star_index/
+.ipynb_checkpoints/
+star_mapping_results/
+_STARtmp/
+slurm*
+
