@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=16
+#SBATCH --time=0:45:00
+#SBATCH --mail-type=ALL
+#SBATCH --mem=50g
+#SBATCH --mail-user=sheph085@umn.edu
+
+module load star
+
+#Download mouse genome
+#wget -P ../star_index/ http://ftp.ensembl.org/pub/release-103/fasta/mus_musculus/dna/Mus_musculus.GRCm39.dna.primary_assembly.fa.gz 
+
+#Download mouse genome annotation
+#wget -P ../star_index/ http://ftp.ensembl.org/pub/release-103/gtf/mus_musculus/Mus_musculus.GRCm39.103.gtf.gz
+
+#Unzip files
+#gzip -d ../star_index/Mus_musculus.GRCm39.103.gtf.gz
+#gzip -d ../star_index/Mus_musculus.GRCm39.dna.primary_assembly.fa.gz
+
+cd ../star_index
+
+STAR --runThreadN 16 \
+--runMode genomeGenerate \
+--genomeDir ./ \
+--genomeFastaFiles Mus_musculus.GRCm39.dna.primary_assembly.fa \
+--sjdbGTFfile Mus_musculus.GRCm39.103.gtf \
+--sjdbOverhang 150
