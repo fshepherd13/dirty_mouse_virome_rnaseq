@@ -1,0 +1,15 @@
+name: rnaseq_discovery
+
+channels:
+  - bioconda
+  - default
+  - conda-forge
+  - anaconda
+
+dependencies:
+  - star =2.7.1a
+  - trinity =2.12.0
+  - samtools =1.12
+  - salmon =1.4.0
+  - blast =2.11.0
+  - hmmer =3.3.2
