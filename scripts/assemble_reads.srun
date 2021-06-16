@@ -1,0 +1,47 @@
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH --mem=500g
+#SBATCH --cpus-per-task=120
+#SBATCH -p langlois-node1
+#SBATCH -t 1-00:00:00
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=sheph085@umn.edu
+
+#Activate conda environment
+source activate rnaseq_discovery
+
+#Define variables for trinity run
+ID=""         #experiment ID (i.e. AJ04, AK04, etc.)
+IN_DIR=""     #File path for directory that holds star mapping results 
+              #(can be relative file path as well i.e. "../star_mapping_results_AJ04/")
+OUT_DIR=""    #File path where you want the trinity output to go 
+              #(i.e. "/scratch.global/sheph085/trinity_langlois_044/${ID}_trinity")
+
+#CD to directory with mapped and unmapped reads
+cd ${IN_DIR}
+
+#Concatenate all forward and all reverse unmapped reads into a single file
+cat *.mate1 >> ${ID}_unmapped_1.fq
+cat *.mate2 >> ${ID}_unmapped_2.fq
+
+#Append read direction information using awk
+#On every 4th line of the unmapped_1.fq file (NR%4==1), strip white space and add
+# "/1" text at the end. Print the lines to a new fq file.
+awk '{if (NR%4==1) $1=$1 "/1"; print}' ${ID}_unmapped_1.fq > ${ID}_unmapped_ed1.fq
+awk '{if (NR%4==1) $1=$1 "/2"; print}' ${ID}_unmapped_2.fq > ${ID}_unmapped_ed2.fq
+
+#Make directory to hold results for trinity
+mkdir ${OUT_DIR}
+
+#De novo assemble reads with Trinity
+Trinity --seqType fq \
+        --max_memory 490G \
+        --left ${ID}_unmapped_ed1.fq \
+        --right ${ID}_unmapped_ed2.fq \
+        --SS_lib_type RF \
+        --CPU $SLURM_CPUS_PER_TASK \
+        --min_contig_length 150 \
+        --normalize_reads \
+        --monitoring \
+        --output ${OUT_DIR}
