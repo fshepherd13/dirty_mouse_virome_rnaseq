@@ -1,0 +1,41 @@
+DIR = "/home/langlois/data_release/umgc/novaseq/210423_A00223_0535_AH7K3MDRXY/Langlois_Project_044"
+SAMPLES, = glob_wildcards("/home/langlois/data_release/umgc/novaseq/210423_A00223_0535_AH7K3MDRXY/Langlois_Project_044/{sample}_R1_001.fastq.gz")
+
+
+rule all:
+    input: 
+        "../salmon_indices/langlois_unmapped_044_index",
+        expand("../salmon_quant_results/langlois044_all/{sample}_unmapped_quant/quant.sf", sample=SAMPLES)
+
+rule salmon_index:
+    input:
+        "../trinity_results/langlois_project_044/trinity_unmapped_044_all.fasta"
+    output:
+        directory("../salmon_indices/langlois_unmapped_044_index")
+    log:
+        "../logs/salmon/index"
+    shell:
+        """
+        salmon index -t {input} -i {output} -p 16 > {log}
+        """
+
+rule salmon_quant:
+    input:
+        r1 = expand("{dir}/{{sample}}_R1_001.fastq.gz", dir=DIR),
+        r2 = expand("{dir}/{{sample}}_R2_001.fastq.gz", dir=DIR),
+        index = "../salmon_indices/langlois_unmapped_044_index"
+    output:
+        "../salmon_quant_results/langlois044_all/{sample}_unmapped_quant/quant.sf"
+    log:
+        "../logs/salmon/quant/{sample}.log"
+    shell:
+        """
+        salmon quant -i {input.index} \
+            -l A \
+            -1 {input.r1} \
+            -2 {input.r2} \
+            --threads 16 \
+            --seqBias \
+            --gcBias \
+            -o {output} > {log}
+        """
