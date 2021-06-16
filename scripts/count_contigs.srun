@@ -1,0 +1,13 @@
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 32
+#SBATCH --mem=100g
+#SBATCH -p amdsmall
+#SBATCH --time=24:00:00
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=sheph085@umn.edu
+
+source activate rnaseq_discovery
+
+snakemake --cores 2 --unlock
+snakemake --cores 32 --rerun-incomplete
