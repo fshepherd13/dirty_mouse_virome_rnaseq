@@ -1,7 +1,12 @@
 #!/bin/bash
 #SBATCH --nodes=1
+<<<<<<< HEAD
 #SBATCH --ntasks=20
 #SBATCH --mem=100g
+=======
+#SBATCH --ntasks=16
+#SBATCH --mem=30g
+>>>>>>> 7be319d0b097688e5fbc6f885e0528f42b546815
 #SBATCH --time=8:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=sheph085@umn.edu
@@ -11,6 +16,7 @@ module load star
 #Map AJ04 reads
 for FILE in "AJ04-1-CoH-B6_S13" "AJ04-10-PetB_S22" "AJ04-2-CoH-IFNAR_S14" "AJ04-3-CoH-IFNLR_S15" "AJ04-4-CoH-IFNLAR_S16" "AJ04-5-PetC_S17" "AJ04-6-CoH-B6_S18" "AJ04-7-CoH-IFNAR_S19" "AJ04-8-CoH-IFNLR_S20" "AJ04-9-CoH-IFNLAR_S21" "AJ04c-11-SPF-B6_S23" "AJ04c-12-SPF-IFNAR_S24" "AJ04c-13-SPF-IFNLR_S25" "AJ04c-14-SPF-IFNLAR_S26"
 
+<<<<<<< HEAD
 do
     STAR --runThreadN 16 \
     --genomeDir ../star_index \
@@ -37,6 +43,8 @@ done
 #Map AK03 reads
 for FILE in "AK03-11-CoH-B6_S9" "AK03-13-CoH-IFNAR_S10" "AK03-14-PetA_S11" "Liz-AK03-15-PetB_S12"
 
+=======
+>>>>>>> 7be319d0b097688e5fbc6f885e0528f42b546815
 do
     STAR --runThreadN 16 \
     --genomeDir ../star_index \
