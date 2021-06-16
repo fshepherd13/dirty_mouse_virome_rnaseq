@@ -9,14 +9,14 @@
 module load star
 
 #Download mouse genome
-#wget -P ../star_index/ http://ftp.ensembl.org/pub/release-103/fasta/mus_musculus/dna/Mus_musculus.GRCm39.dna.primary_assembly.fa.gz 
+wget -P ../star_index/ http://ftp.ensembl.org/pub/release-103/fasta/mus_musculus/dna/Mus_musculus.GRCm39.dna.primary_assembly.fa.gz 
 
 #Download mouse genome annotation
-#wget -P ../star_index/ http://ftp.ensembl.org/pub/release-103/gtf/mus_musculus/Mus_musculus.GRCm39.103.gtf.gz
+wget -P ../star_index/ http://ftp.ensembl.org/pub/release-103/gtf/mus_musculus/Mus_musculus.GRCm39.103.gtf.gz
 
 #Unzip files
-#gzip -d ../star_index/Mus_musculus.GRCm39.103.gtf.gz
-#gzip -d ../star_index/Mus_musculus.GRCm39.dna.primary_assembly.fa.gz
+gzip -d ../star_index/Mus_musculus.GRCm39.103.gtf.gz
+gzip -d ../star_index/Mus_musculus.GRCm39.dna.primary_assembly.fa.gz
 
 cd ../star_index
 
