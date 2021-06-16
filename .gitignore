@@ -5,3 +5,9 @@ star_mapping_results/
 _STARtmp/
 slurm*
 Log.out
+*/*.log*
+.snakemake
+logs/
+blast_results/
+salmon_indices/
+salmon_quant_results/
