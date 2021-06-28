@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH --job-name=<salmon_lineage_assignment_ak03>
+#SBATCH --mail-user=<sheph085@umn.edu>
+#SBATCH --mail-type=BEGIN,FAIL,END
+#SBATCH --ntasks=1
+#SBATCH --mem=500G
+#SBATCH --cpus-per-task=100
+#SBATCH -p langlois-node1
+#SBATCH --time=8:00:00
+
+source activate rnaseq_discovery
+snakemake --cores 100 --rerun-incomplete
