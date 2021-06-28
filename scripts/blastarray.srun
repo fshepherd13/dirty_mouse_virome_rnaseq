@@ -1,37 +1,55 @@
 #!/bin/bash
-#SBATCH --job-name=<langlois044_ak03_blast>
+#SBATCH --job-name=<langlois044_all_blast>
 #SBATCH --mail-user=<sheph085@umn.edu>
 #SBATCH --mail-type=BEGIN,FAIL,END
 #SBATCH --output <blastp_%j.log>
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=8gb
-#SBATCH --time=4:00:00
+#SBATCH --time=8:00:00
 #SBATCH -p small
-#SBATCH --array=1-82
+#SBATCH --array=1-100
 date;hostname;pwd
 
 #source for script: https://help.rc.ufl.edu/doc/Blast_Job_Scripts
 
 module load ncbi_blast+
+####User inputs####################################################
+SCRATCH="/scratch.global/sheph085/trinity_langlois_044/ak03_trinity/Trinity.fasta" #Path where the trinity output gets put by Trinity (for me this is a scratch directory)
+ 
+LOCAL="../trinity_results/langlois_project_044/trinity_unmapped_langlois044_all.fasta" #Path to put a copy of the Trinity reads in a local directory so it doesn't get lost
 
-cd ../
+BLAST_DIR="../trinity_results/langlois_project_044/trinity_unmapped_langlois044_blast_query_files" #Path to hold the subsets of trinity files for running with BLAST
 
-export INPUT_DIR="trinity_results/langlois_project_044/trinity_unmapped_044-ak03_blast_query_files"
-export OUTPUT_DIR="blast_results/langlois044/ak03_blast_results"
-export LOG_DIR="logs/blast/langlois044/ak03"
+OUTPUT_DIR="../blast_results/langlois044/044_all_blast_results"
+
+BLAST_PREFIX="blast_query_044_all_" #Prefix added to each BLAST subset
+########################################################################################################
+
+
+
+#Move Trinity output from scratch directory so it doesn't get lost
+cp $SCRATCH $LOCAL
+
+#Make directory to hold subsets of trinity files
+mkdir $BLAST_DIR
+
+faSplit sequence $LOCAL 100 $BLAST_DIR/$BLAST_PREFIX
+
+export BLAST_DIR
+export OUTPUT_DIR
 mkdir -p ${OUTPUT_DIR} ${LOG_DIR}
 
 RUN_ID=$(( $SLURM_ARRAY_TASK_ID ))
 
-QUERY_FILE=$( ls ${INPUT_DIR} | sed -n ${RUN_ID}p )
+QUERY_FILE=$( ls ${BLAST_DIR} | sed -n ${RUN_ID}p )
 QUERY_NAME="${QUERY_FILE%.*}"
  
-QUERY="${INPUT_DIR}/${QUERY_FILE}"
+QUERY="${BLAST_DIR}/${QUERY_FILE}"
 OUTPUT="${OUTPUT_DIR}/${QUERY_NAME}.out"
 
-echo -e "Command:\nblastn -query ${QUERY} -db nt –out ${OUTPUT} –max_target_seqs 1 -outfmt '6 qseqid sseqid evalue bitscore sgi sacc staxids sscinames scomnames stitle' –num_threads 8"
+echo -e "Command:\nblastn -query ${QUERY} -db nt –out ${OUTPUT} –max_target_seqs 10 -outfmt '6 qseqid sseqid evalue bitscore sgi sacc staxids sscinames scomnames stitle' –num_threads 8"
 
-blastn -query ${QUERY} -db nt -out ${OUTPUT} -max_target_seqs 1 -outfmt '6 qseqid sseqid evalue bitscore sgi sacc staxids sscinames scomnames stitle' -num_threads 8
+blastn -query ${QUERY} -db /panfs/roc/risdb_new/blast/current/nt -out ${OUTPUT} -max_target_seqs 10 -outfmt '6 qseqid sseqid evalue bitscore sgi sacc staxids sscinames scomnames stitle' -num_threads 8
 
 date
