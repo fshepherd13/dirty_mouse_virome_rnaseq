@@ -1,0 +1,7 @@
+#Config file to accompany dirty mouse metagenomic/viral discovery snakemake pipeline for quantifying and classifying Trinity transcripts
+
+in_dir: /home/langlois/data_release/umgc/novaseq/210423_A00223_0535_AH7K3MDRXY/Langlois_Project_044 #Directory containing raw fastq files from RNAseq
+sample_file: "samples.csv"
+seq_run: "langlois044"
+experiment_id: "ak03"
+trinity_file: "../trinity_results/langlois_project_044/trinity_unmapped_langlois044-ak03_all.fasta" #Relative path to the trinity output file
