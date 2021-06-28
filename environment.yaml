@@ -13,3 +13,4 @@ dependencies:
   - samtools =1.12
   - salmon =1.4.0
   - snakemake
+  - pandas
