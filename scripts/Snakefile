@@ -2,7 +2,7 @@ import pandas as pd
 configfile: "./config.yaml"
 
 DIR = config["in_dir"]
-SAMPLES = pd.read_table(config["sample_file"])['Sample']
+SAMPLES = pd.read_csv(config["sample_file"])['Sample']
 EXP=config["experiment_id"]
 SEQ_RUN=config["seq_run"] #"langlois044_all"
 
@@ -11,7 +11,9 @@ rule all:
         "../salmon_indices/langlois_unmapped_044_index",
         expand("../salmon_quant_results/{experiment_id}/{sample}_unmapped_quant/quant.sf", sample=SAMPLES, experiment_id=EXP),
         expand("../final/{seq_run}/{exp}_sorted_blast.txt", exp=EXP, seq_run=SEQ_RUN),
-        expand("../final/{seq_run}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN)
+        expand("../final/{seq_run}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN),
+        expand("../final/{seq_run}/{exp}_sp_counts.csv", exp=EXP, seq_run=SEQ_RUN),
+        family_counts = expand("../final/{seq_run}/{exp}_family_counts.csv", exp=EXP, seq_run=SEQ_RUN)
 
 rule salmon_index:
     input:
@@ -75,3 +77,14 @@ rule assign_lineages:
         mv tmp.csv {output}
         rm {EXP}_lineage.csv
         '''
+
+rule summarize_transcripts:
+    input:
+        lineages = expand("../final/{seq_run}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN),
+        salmon_dir = expand("../salmon_quant_results/{experiment_id}", experiment_id=EXP),
+    output:
+        species_counts = expand("../final/{seq_run}/{exp}_sp_counts.csv", exp=EXP, seq_run=SEQ_RUN),
+        family_counts = expand("../final/{seq_run}/{exp}_family_counts.csv", exp=EXP, seq_run=SEQ_RUN)        
+    script:
+        "deseq2.R"
+        
