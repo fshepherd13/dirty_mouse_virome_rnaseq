@@ -1,11 +1,10 @@
 name: rnaseq_discovery
 
 channels:
-  - bioconda
-  - default
-  - biocore
   - conda-forge
-  - anaconda
+  - bioconda
+  - r
+  - default
 
 dependencies:
   - star =2.7.1a
@@ -14,3 +13,7 @@ dependencies:
   - salmon =1.4.0
   - snakemake
   - pandas
+  - r=4.1.0
+  - r-essentials
+  - bioconductor-deseq2
+  - bioconductor-tximport
