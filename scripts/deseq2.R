@@ -5,7 +5,7 @@ library('tximport')
 #Read in dataframe that contains the trinity ID's linked to lineage information
 df <- read.csv(snakemake@input[["lineages"]], header=TRUE)
 #Read in files of from salmon quantification
-files <- list.files(snakemake@input[["salmon_dir"]], pattern="quant.sf", recursive=TRUE, full.names=TRUE)
+files <- snakemake@input[["salmon_files"]]
 #Import table with sample metadata
 sample_table <- read.csv("samples.csv")[,1:2]
 #Link sample ID info to the name of each salmon quant file
