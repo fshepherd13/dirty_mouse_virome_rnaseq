@@ -8,7 +8,7 @@ This repo contains code for a pipeline originally conceived of and written by Ke
 * `samtools`, version 1.12- details [here](https://sourceforge.net/projects/samtools/) 
 * `salmon` RNAseq transcript quantification, version 1.4.0 details [here](https://github.com/COMBINE-lab/salmon) 
 * `blast+` sequence database, version 2.11.0, details [here](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs) 
-* `snakemake`, latest version used is XYZ, details [here](https://snakemake.readthedocs.io/en/stable/)
+* `snakemake`, latest version used is 6.5.1, details [here](https://snakemake.readthedocs.io/en/stable/)
 * `dib-lab/2018-ncbi-lineages` scripts on [github](https://github.com/dib-lab/2018-ncbi-lineages).
 * `faSplit` script for splitting fasta files into subsets for a parallelized BLAST search, executable found [here](http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/)
 
