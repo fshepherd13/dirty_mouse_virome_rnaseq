@@ -10,10 +10,10 @@ rule all:
     input: 
         "../salmon_indices/langlois_unmapped_044_index",
         expand("../salmon_quant_results/{experiment_id}/{sample}_unmapped_quant/quant.sf", sample=SAMPLES, experiment_id=EXP),
-        expand("../final/{seq_run}/{exp}_sorted_blast.txt", exp=EXP, seq_run=SEQ_RUN),
-        expand("../final/{seq_run}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN),
-        expand("../final/{seq_run}/{exp}_sp_counts.csv", exp=EXP, seq_run=SEQ_RUN),
-        family_counts = expand("../final/{seq_run}/{exp}_family_counts.csv", exp=EXP, seq_run=SEQ_RUN)
+        expand("../final/{seq_run}/{exp}/{exp}_sorted_blast.txt", exp=EXP, seq_run=SEQ_RUN),
+        expand("../final/{seq_run}/{exp}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN),
+        expand("../final/{seq_run}/{exp}/{exp}_sp_counts.csv", exp=EXP, seq_run=SEQ_RUN),
+        expand("../final/{seq_run}/{exp}/{exp}_family_counts.csv", exp=EXP, seq_run=SEQ_RUN)
 
 rule salmon_index:
     input:
@@ -52,7 +52,7 @@ rule concatenate_blast:
     input:
         expand("../blast_results/{seq_run}/{exp}_blast_results/", exp=EXP, seq_run=SEQ_RUN)
     output:
-        expand("../final/{seq_run}/{exp}_sorted_blast.txt", exp=EXP, seq_run=SEQ_RUN)
+        expand("../final/{seq_run}/{exp}/{exp}_sorted_blast.txt", exp=EXP, seq_run=SEQ_RUN)
     shell:
         '''
         cat {input}/*.out | sort -k 1,1 -k4,4nr | sort -u -k1,1 --merge > {output}
@@ -60,11 +60,11 @@ rule concatenate_blast:
 
 rule assign_lineages:
     input:
-        blast = expand("../final/{seq_run}/{exp}_sorted_blast.txt", exp=EXP, seq_run=SEQ_RUN),
+        blast = expand("../final/{seq_run}/{exp}/{exp}_sorted_blast.txt", exp=EXP, seq_run=SEQ_RUN),
         nodes = "/panfs/roc/groups/9/langlois/shared/taxdump2021/nodes.dmp",
         names = "/panfs/roc/groups/9/langlois/shared/taxdump2021/names.dmp"
     output:
-        expand("../final/{seq_run}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN)
+        expand("../final/{seq_run}/{exp}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN)
     shell:
         '''
         cut -f6,7 {input.blast} | sed 's/;.*//;s/\t/,/g' > {EXP}_lineage.csv
@@ -80,11 +80,11 @@ rule assign_lineages:
 
 rule summarize_transcripts:
     input:
-        lineages = expand("../final/{seq_run}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN),
+        lineages = expand("../final/{seq_run}/{exp}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN),
         salmon_files = expand("../salmon_quant_results/{experiment_id}/{sample}_unmapped_quant/quant.sf", sample=SAMPLES, experiment_id=EXP),
     output:
-        species_counts = expand("../final/{seq_run}/{exp}_sp_counts.csv", exp=EXP, seq_run=SEQ_RUN),
-        family_counts = expand("../final/{seq_run}/{exp}_family_counts.csv", exp=EXP, seq_run=SEQ_RUN)        
+        species_counts = expand("../final/{seq_run}/{exp}/{exp}_sp_counts.csv", exp=EXP, seq_run=SEQ_RUN),
+        family_counts = expand("../final/{seq_run}/{exp}/{exp}_family_counts.csv", exp=EXP, seq_run=SEQ_RUN)        
     script:
         "deseq2.R"
         
