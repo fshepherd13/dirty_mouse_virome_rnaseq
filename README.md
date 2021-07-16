@@ -2,6 +2,9 @@
 
 This repo contains code for a pipeline originally conceived of and written by Keir Balla at the University of Utah for RNAseq analysis for the Langlois-Eide lab dirty mouse virome collaboration, with modifications by me.
 
+### Output
+The pipeline works by mapping RNAseq reads to the mouse genome, de novo assembling unmapped reads with Trinity, and assigning taxonomic lineages to the reads with BLASTn. The two main outputs are csv files that show the raw read counts for the taxonomic (1) families and (2) species present in each mouse. 
+
 ### Dependencies/versions used
 * `STAR` RNAseq read mapper, version 2.7.1a- details [here](https://github.com/alexdobin/STAR)
 * `trinity` RNAseq de novo read assembler, version 2.8.5- details [here](https://github.com/trinityrnaseq/trinityrnaseq/wiki) 
@@ -33,7 +36,7 @@ The dib lab scripts for assigning lineages to Trinity contigs were cloned from g
 ### Data
 Raw data is not included in this repo, but consists of 2x150 paired end stranded novaseq reads. 
 
-### Running
+### Running the pipeline
 The slurm/bash scripts should be run in the following order:
 1. `star_index.srun` <- Downloads the mouse reference genome from [ensembl](https://www.ensembl.org/index.html) and indexes it for mapping with STAR.
 2. `map_reads.srun` <- maps raw rnaseq reads to the indexed mouse genome with STAR and output unmapped reads (i.e. pathogen-specific reads).
