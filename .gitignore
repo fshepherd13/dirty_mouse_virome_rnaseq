@@ -18,3 +18,5 @@ scripts/assemble_readsAK02.srun
 scripts/assemble_readsAK03.srun
 scripts/make_taxdump.srun
 scripts/makempiblastdb.srun
+scripts/stderr.*
+scripts/stdout.*
