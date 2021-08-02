@@ -9,7 +9,7 @@ SEQ_RUN=config["seq_run"] #"langlois044_all"
 rule all:
     input: 
         expand("../salmon_indices/{seq_run}_unmapped_index", seq_run=SEQ_RUN),
-        expand("../salmon_quant_results/{experiment_id}/{sample}_unmapped_quant/quant.sf", sample=SAMPLES, experiment_id=EXP),
+        expand("../salmon_quant_results/{seq_run}/{experiment_id}/{sample}_unmapped_quant/quant.sf", sample=SAMPLES, experiment_id=EXP, seq_run=SEQ_RUN),
         expand("../final/{seq_run}/{exp}/{exp}_sorted_blast.txt", exp=EXP, seq_run=SEQ_RUN),
         expand("../final/{seq_run}/{exp}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN),
         expand("../final/{seq_run}/{exp}/{exp}_sp_counts.csv", exp=EXP, seq_run=SEQ_RUN),
@@ -33,9 +33,9 @@ rule salmon_quant:
         r2 = expand("{dir}/{{sample}}_R2_001.fastq.gz", dir=DIR),
         index = expand("../salmon_indices/{seq_run}_unmapped_index", seq_run=SEQ_RUN)
     output:
-        expand("../salmon_quant_results/{experiment_id}/{{sample}}_unmapped_quant/quant.sf", experiment_id=EXP)
+        expand("../salmon_quant_results/{seq_run}/{experiment_id}/{{sample}}_unmapped_quant/quant.sf", seq_run=SEQ_RUN, experiment_id=EXP)
     params:
-        dir = directory(expand("../salmon_quant_results/{experiment_id}/{{sample}}_unmapped_quant", experiment_id=EXP))
+        dir = directory(expand("../salmon_quant_results/{seq_run}/{experiment_id}/{{sample}}_unmapped_quant", seq_run=SEQ_RUN, experiment_id=EXP))
     shell:
         """
         salmon quant -i {input.index} \
@@ -81,7 +81,7 @@ rule assign_lineages:
 rule summarize_transcripts:
     input:
         lineages = expand("../final/{seq_run}/{exp}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN),
-        salmon_files = expand("../salmon_quant_results/{experiment_id}/{sample}_unmapped_quant/quant.sf", sample=SAMPLES, experiment_id=EXP),
+        salmon_files = expand("../salmon_quant_results/{seq_run}/{experiment_id}/{sample}_unmapped_quant/quant.sf", sample=SAMPLES, experiment_id=EXP, seq_run=SEQ_RUN),
     output:
         species_counts = expand("../final/{seq_run}/{exp}/{exp}_sp_counts.csv", exp=EXP, seq_run=SEQ_RUN),
         family_counts = expand("../final/{seq_run}/{exp}/{exp}_family_counts.csv", exp=EXP, seq_run=SEQ_RUN)        
