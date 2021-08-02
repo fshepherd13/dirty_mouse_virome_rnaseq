@@ -1,50 +1,34 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=20
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=50
 #SBATCH --mem=100g
-#SBATCH --ntasks=16
-#SBATCH --mem=30g
+#SBATCH -p langlois-node1
 #SBATCH --time=8:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=sheph085@umn.edu
 
 module load star
 
-#Map AJ04 reads
-for FILE in "AJ04-1-CoH-B6_S13" "AJ04-10-PetB_S22" "AJ04-2-CoH-IFNAR_S14" "AJ04-3-CoH-IFNLR_S15" "AJ04-4-CoH-IFNLAR_S16" "AJ04-5-PetC_S17" "AJ04-6-CoH-B6_S18" "AJ04-7-CoH-IFNAR_S19" "AJ04-8-CoH-IFNLR_S20" "AJ04-9-CoH-IFNLAR_S21" "AJ04c-11-SPF-B6_S23" "AJ04c-12-SPF-IFNAR_S24" "AJ04c-13-SPF-IFNLR_S25" "AJ04c-14-SPF-IFNLAR_S26"
+#Assign file path to sample file csv
+SAMPLE_FILE="samples_035.csv"
+
+#make directory to hold STAR results:
+OUT_DIR="../star_mapping_results/project_035_aj04"
+mkdir $OUT_DIR
+
+#Specify file path for raw reads
+IN_DIR=
+
+#Map selected read files
+for FILE in $(sed -e 1d $SAMPLE_FILE | cut -d ',' -f1) ;
 
 do
     STAR --runThreadN 16 \
     --genomeDir ../star_index \
-    --readFilesIn ../langlois_project_044/${FILE}_R1_001.fastq.gz ../langlois_project_044/${FILE}_R2_001.fastq.gz \
+    --readFilesIn ${IN_DIR}/${FILE}_R1_001.fastq.gz ${IN_DIR}/${FILE}_R2_001.fastq.gz \
     --readFilesCommand zcat \
     --outSAMtype BAM SortedByCoordinate Unsorted \
     --outReadsUnmapped Fastx \
-    --outFileNamePrefix ../star_mapping_results_AJ04/${FILE}
-done
-
-#Map AK02 reads
-for FILE in "AK02-1-CoH-B6_S1" "AK02-2-CoH-B6-IFN_S2" "AK02-3-CoH-IFNAR_S3" "AK02-4-PetA_S4" "AK02-5-CoH-B6_S5" "AK02-6-CoH-B6-IFN_S6" "AK02-7-CoH-IFNAR_S7" "AK02-8-PetA_S8"
-
-do
-    STAR --runThreadN 16 \
-    --genomeDir ../star_index \
-    --readFilesIn ../langlois_project_044/${FILE}_R1_001.fastq.gz ../langlois_project_044/${FILE}_R2_001.fastq.gz \
-    --readFilesCommand zcat \
-    --outSAMtype BAM SortedByCoordinate Unsorted \
-    --outReadsUnmapped Fastx \
-    --outFileNamePrefix ../star_mapping_results_AK02/${FILE}
-done
-
-#Map AK03 reads
-for FILE in "AK03-11-CoH-B6_S9" "AK03-13-CoH-IFNAR_S10" "AK03-14-PetA_S11" "Liz-AK03-15-PetB_S12"
-
-do
-    STAR --runThreadN 16 \
-    --genomeDir ../star_index \
-    --readFilesIn ../langlois_project_044/${FILE}_R1_001.fastq.gz ../langlois_project_044/${FILE}_R2_001.fastq.gz \
-    --readFilesCommand zcat \
-    --outSAMtype BAM SortedByCoordinate Unsorted \
-    --outReadsUnmapped Fastx \
-    --outFileNamePrefix ../star_mapping_results_AK03/${FILE}
+    --outFileNamePrefix ${OUT_DIR}/${FILE}
 done
