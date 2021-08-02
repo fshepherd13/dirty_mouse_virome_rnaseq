@@ -9,7 +9,7 @@ files <- snakemake@input[["salmon_files"]]
 #Import table with sample metadata
 sample_table <- read.csv("samples.csv")[,1:2]
 #Link sample ID info to the name of each salmon quant file
-names(files) <- sapply(strsplit(dirname(files), "/"), `[`, 4)
+names(files) <- sapply(strsplit(dirname(files), "/"), `[`, 5)
 
 #Perform data analysis for accession level lineage assignments:
 #Link salmon quant files to the transcript lineage info
