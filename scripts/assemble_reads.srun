@@ -1,10 +1,12 @@
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH -n 1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=28
 #SBATCH --mem=500g
-#SBATCH --cpus-per-task=120
 #SBATCH -p langlois-node1
-#SBATCH -t 1-00:00:00
+#SBATCH -t 4-00:00:00
+#SBATCH --output=stdout.%j
+#SBATCH --error=stderr.%j
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=sheph085@umn.edu
 
@@ -12,11 +14,16 @@
 source activate rnaseq_discovery
 
 #Define variables for trinity run
-ID=""         #experiment ID (i.e. AJ04, AK04, etc.)
-IN_DIR=""     #File path for directory that holds star mapping results 
+ID="langlois045_aj04"         #experiment ID (i.e. AJ04, AK04, etc.)
+IN_DIR="../star_mapping_results/project_45_aj04"     
+                #File path for directory that holds star mapping results 
               #(can be relative file path as well i.e. "../star_mapping_results_AJ04/")
-OUT_DIR=""    #File path where you want the trinity output to go 
+OUT_DIR="$HOME/dirty_mouse_virome/rna_seq/trinity_results/langlois_project_035/AJ04_trinity"    
+              #File path where you want the trinity output to go 
               #(i.e. "/scratch.global/sheph085/trinity_langlois_044/${ID}_trinity")
+
+#Make directory to hold results for trinity
+mkdir -p ${OUT_DIR}
 
 #CD to directory with mapped and unmapped reads
 cd ${IN_DIR}
@@ -31,12 +38,11 @@ cat *.mate2 >> ${ID}_unmapped_2.fq
 awk '{if (NR%4==1) $1=$1 "/1"; print}' ${ID}_unmapped_1.fq > ${ID}_unmapped_ed1.fq
 awk '{if (NR%4==1) $1=$1 "/2"; print}' ${ID}_unmapped_2.fq > ${ID}_unmapped_ed2.fq
 
-#Make directory to hold results for trinity
-mkdir ${OUT_DIR}
+
 
 #De novo assemble reads with Trinity
 Trinity --seqType fq \
-        --max_memory 490G \
+        --max_memory 480G \
         --left ${ID}_unmapped_ed1.fq \
         --right ${ID}_unmapped_ed2.fq \
         --SS_lib_type RF \
@@ -45,3 +51,9 @@ Trinity --seqType fq \
         --normalize_reads \
         --monitoring \
         --output ${OUT_DIR}
+
+cd ${OUT_DIR}
+cp Trinity.fasta ../trinity_unmapped_${ID}.fasta
+cd ..
+rm -rf ${OUT_DIR}
+echo "Done assembling ${ID}"
