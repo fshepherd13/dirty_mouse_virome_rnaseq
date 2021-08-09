@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=<langlois044_all_blast>
+#SBATCH --job-name=<langlois035_blast>
 #SBATCH --mail-user=<sheph085@umn.edu>
 #SBATCH --mail-type=BEGIN,FAIL,END
 #SBATCH --output <blastp_%j.log>
@@ -15,26 +15,20 @@ date;hostname;pwd
 
 module load ncbi_blast+
 ####User inputs####################################################
-SCRATCH="/scratch.global/sheph085/trinity_langlois_044/ak03_trinity/Trinity.fasta" #Path where the trinity output gets put by Trinity (for me this is a scratch directory)
- 
-LOCAL="../trinity_results/langlois_project_044/trinity_unmapped_langlois044_all.fasta" #Path to put a copy of the Trinity reads in a local directory so it doesn't get lost
+INPUT="../trinity_results/langlois_project_035/trinity_unmapped_langlois044_all.fasta" #Path to put a copy of the Trinity reads in a local directory so it doesn't get lost
 
-BLAST_DIR="../trinity_results/langlois_project_044/trinity_unmapped_langlois044_blast_query_files" #Path to hold the subsets of trinity files for running with BLAST
+BLAST_DIR="../trinity_results/langlois_project_035/trinity_unmapped_langlois035_blast_query_files" #Path to hold the subsets of trinity files for running with BLAST
 
-OUTPUT_DIR="../blast_results/langlois044/044_all_blast_results"
+OUTPUT_DIR="../blast_results/langlois_project_035/035_all_blast_results"
 
-BLAST_PREFIX="blast_query_044_all_" #Prefix added to each BLAST subset
+BLAST_PREFIX="blast_query_035_all_" #Prefix added to each BLAST subset
 ########################################################################################################
 
-
-
-#Move Trinity output from scratch directory so it doesn't get lost
-cp $SCRATCH $LOCAL
 
 #Make directory to hold subsets of trinity files
 mkdir $BLAST_DIR
 
-faSplit sequence $LOCAL 100 $BLAST_DIR/$BLAST_PREFIX
+faSplit sequence $INPUT 100 $BLAST_DIR/$BLAST_PREFIX
 
 export BLAST_DIR
 export OUTPUT_DIR
