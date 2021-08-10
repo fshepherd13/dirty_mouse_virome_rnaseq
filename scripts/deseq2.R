@@ -6,8 +6,6 @@ library('tximport')
 df <- read.csv(snakemake@input[["lineages"]], header=TRUE)
 #Read in files of from salmon quantification
 files <- snakemake@input[["salmon_files"]]
-#Import table with sample metadata
-sample_table <- read.csv("samples.csv")[,1:2]
 #Link sample ID info to the name of each salmon quant file
 names(files) <- sapply(strsplit(dirname(files), "/"), `[`, 5)
 
