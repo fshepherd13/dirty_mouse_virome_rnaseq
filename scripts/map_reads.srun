@@ -31,4 +31,7 @@ do
     --outSAMtype BAM SortedByCoordinate Unsorted \
     --outReadsUnmapped Fastx \
     --outFileNamePrefix ${OUT_DIR}/${FILE}
+
+echo "Done mapping ${FILE} with STAR."
+
 done
