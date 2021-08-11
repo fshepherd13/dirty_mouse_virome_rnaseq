@@ -20,3 +20,8 @@ scripts/make_taxdump.srun
 scripts/makempiblastdb.srun
 scripts/stderr.*
 scripts/stdout.*
+*_err*
+*_out*
+scripts/*_script_copies/
+*phase2*
+trinity_results/
