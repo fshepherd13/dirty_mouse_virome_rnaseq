@@ -8,7 +8,7 @@ SEQ_RUN=config["seq_run"] #"langlois044_all"
 
 rule all:
     input: 
-        expand("../salmon_indices/{seq_run}_unmapped_index", seq_run=SEQ_RUN),
+        expand("../salmon_indices/{seq_run}/{experiment_id}_unmapped_index", seq_run=SEQ_RUN, experiment_id=EXP),
         expand("../salmon_quant_results/{seq_run}/{experiment_id}/{sample}_unmapped_quant/quant.sf", sample=SAMPLES, experiment_id=EXP, seq_run=SEQ_RUN),
         expand("../final/{seq_run}/{exp}/{exp}_sorted_blast.txt", exp=EXP, seq_run=SEQ_RUN),
         expand("../final/{seq_run}/{exp}/{exp}_transcript_lineages.csv", exp=EXP, seq_run=SEQ_RUN),
@@ -19,9 +19,9 @@ rule salmon_index:
     input:
         config["trinity_file"]
     output:
-        directory(expand("../salmon_indices/{seq_run}_unmapped_index", seq_run=SEQ_RUN)),
+        directory("../salmon_indices/{seq_run}/{experiment_id}_unmapped_index"),
     log:
-        "../logs/salmon/index.log"
+        "../logs/salmon/{seq_run}/{experiment_id}.index.log"
     shell:
         """
         salmon index -t {input} -i {output} -p 16 > {log}
@@ -31,7 +31,7 @@ rule salmon_quant:
     input:
         r1 = expand("{dir}/{{sample}}_R1_001.fastq.gz", dir=DIR),
         r2 = expand("{dir}/{{sample}}_R2_001.fastq.gz", dir=DIR),
-        index = "../salmon_indices/{seq_run}_unmapped_index"
+        index = "../salmon_indices/{seq_run}/{experiment_id}_unmapped_index"
     output:
         "../salmon_quant_results/{seq_run}/{experiment_id}/{sample}_unmapped_quant/quant.sf"
     params:
